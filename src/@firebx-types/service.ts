@@ -1,4 +1,4 @@
-import {FirebxRootStore} from "@firebx-types/firebx-root-store";
+import {FirebxRootStore} from "./firebx-root-store";
 
 export interface FetchServiceProps {
   rootStore: FirebxRootStore;

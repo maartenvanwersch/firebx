@@ -1,4 +1,4 @@
-import {FirebaseStore} from "@stores/FirebaseStore";
+import {FirebaseStore} from "../stores";
 
 export interface FirebxRootStore {
   firebaseStore: FirebaseStore;

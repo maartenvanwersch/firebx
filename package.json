@@ -1,6 +1,6 @@
 {
   "name": "firebx",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Mobx implementation for firebase apps. Abstractions for stores and fetch services.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

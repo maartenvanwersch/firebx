@@ -1,7 +1,7 @@
-import {WithUid} from "@firebx-types/with-uid";
-import {FetchCollectionService, FetchServiceProps} from "@firebx-types/service";
-import {FetchCollection} from "@services/FetchCollection";
-import {AbstractBaseStore} from "@stores/AbstractBaseStore";
+import {WithUid} from "../@firebx-types";
+import {FetchCollectionService, FetchServiceProps} from "../@firebx-types/service";
+import {FetchCollection} from "../services/FetchCollection";
+import {AbstractBaseStore} from "./AbstractBaseStore";
 
 export abstract class AbstractCollectionStore<Type extends WithUid>
   extends AbstractBaseStore<Type[], FetchCollectionService<Type>> {

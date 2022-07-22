@@ -1,6 +1,6 @@
-import {AppError} from "@firebx-types/enums";
-import {BaseFetchService, FetchServiceProps} from "@firebx-types/service";
-import {FirebxRootStore} from "@firebx-types/firebx-root-store";
+import {AppError} from "../@firebx-types/enums";
+import {BaseFetchService, FetchServiceProps} from "../@firebx-types/service";
+import {FirebxRootStore} from "../@firebx-types";
 import {action, autorun, makeObservable, observable, runInAction} from "mobx";
 
 // eslint-disable-next-line no-use-before-define

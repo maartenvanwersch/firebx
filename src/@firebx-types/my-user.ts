@@ -1,4 +1,4 @@
-import {UserRole} from "@firebx-types/user-role"
+import {UserRole} from "./user-role"
 
 export interface CreateMyUser {
   email: string;

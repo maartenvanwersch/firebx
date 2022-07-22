@@ -1,4 +1,4 @@
-import { FirebxRootStore } from "@firebx-types/firebx-root-store";
+import { FirebxRootStore } from "../@firebx-types";
 import { FirebaseApp } from "firebase/app";
 import { Firestore, getFirestore } from "firebase/firestore";
 

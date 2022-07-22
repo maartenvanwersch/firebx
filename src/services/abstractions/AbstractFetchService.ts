@@ -1,6 +1,6 @@
-import {AppError} from "@firebx-types/enums";
-import {FirebxRootStore} from "@firebx-types/firebx-root-store";
-import {BaseFetchService, FetchServiceProps} from "@firebx-types/service";
+import {AppError} from "../../@firebx-types/enums";
+import {FirebxRootStore} from "../../@firebx-types";
+import {BaseFetchService, FetchServiceProps} from "../../@firebx-types/service";
 import {collection, doc, getDoc, getDocs, query} from "firebase/firestore";
 
 export abstract class AbstractFetchService<Type> implements BaseFetchService {
