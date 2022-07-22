@@ -7,6 +7,8 @@ export interface FetchServiceProps<RootStore extends FirebxRootStore> {
 
 export interface BaseFetchService<RootStore extends FirebxRootStore> extends FetchServiceProps<RootStore> {
   fetch: () => Promise<any>;
+  fetchByUid: (uid: string) => Promise<any>;
+  fetchByAll: (uid: string) => Promise<any>;
 }
 
 export interface FetchCollectionService<Type, RootStore extends FirebxRootStore> extends BaseFetchService<RootStore> {
