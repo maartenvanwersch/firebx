@@ -2,8 +2,10 @@
   "name": "firebx",
   "version": "1.0.3",
   "description": "Mobx implementation for firebase apps. Abstractions for stores and fetch services.",
-  "main": "./src/index.ts",
+  "main": "./dist/index.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
