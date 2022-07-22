@@ -19,7 +19,7 @@ export abstract class AbstractFetchService<Type> implements BaseFetchService {
     return this.fetchCollection<Type>(this.collectionId);
   }
 
-  async fetchByUid<Type>(uid: string) {
+  async fetchByUid(uid: string) {
     if (!uid) throw new Error(AppError.UserUndefined);
     return this.fetchDoc<Type>(this.collectionId, uid);
   }

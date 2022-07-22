@@ -1,7 +1,5 @@
 import {FirebxRootStore} from "@firebx-types/firebx-root-store";
 
-export type DependencyFetches = Promise<void>[];
-
 export interface FetchServiceProps {
   rootStore: FirebxRootStore;
   collectionId: string
