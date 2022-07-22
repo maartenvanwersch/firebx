@@ -1,12 +1,15 @@
 import { FirebxRootStore } from "@firebx-types/firebx-root-store";
 import { FirebaseApp } from "firebase/app";
-import { Firestore } from "firebase/firestore";
+import { Firestore, getFirestore } from "firebase/firestore";
 
-export declare class FirebaseStore {
+export class FirebaseStore {
   readonly rootStore: FirebxRootStore;
 
   readonly firestore: Firestore;
 
-  constructor(rootStore: FirebxRootStore, firebaseApp: FirebaseApp)
+  constructor(rootStore: FirebxRootStore, firebaseApp: FirebaseApp) {
+    this.rootStore = rootStore;
+    this.firestore = getFirestore(firebaseApp);
+  }
 
 }

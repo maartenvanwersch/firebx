@@ -1,6 +1,6 @@
 {
   "name": "firebx",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Mobx implementation for firebase apps. Abstractions for stores and fetch services.",
   "main": "./src/index.ts",
   "scripts": {
