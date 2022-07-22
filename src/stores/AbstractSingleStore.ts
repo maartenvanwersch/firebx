@@ -1,11 +1,14 @@
-import {FetchServiceProps, FetchSingleService, WithUid} from "../@firebx-types";
+import {FetchServiceProps, FetchSingleService, FirebxRootStore, WithUid} from "../@firebx-types";
 import {AbstractBaseStore} from "./AbstractBaseStore";
 
-export abstract class AbstractSingleStore<Type extends WithUid> extends AbstractBaseStore<Type, FetchSingleService<Type>> {
+export abstract class AbstractSingleStore<
+  Type extends WithUid,
+  RootStore extends FirebxRootStore
+  > extends AbstractBaseStore<Type, RootStore, FetchSingleService<Type, RootStore>> {
 
   protected constructor(
-    FetchConstructor: { new (args: FetchServiceProps): FetchSingleService<Type> },
-    { rootStore, collectionId }: FetchServiceProps
+    FetchConstructor: { new (args: FetchServiceProps<RootStore>): FetchSingleService<Type, RootStore> },
+    { rootStore, collectionId }: FetchServiceProps<RootStore>
   ) {
     super(FetchConstructor, { rootStore, collectionId });
   }

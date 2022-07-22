@@ -1,16 +1,15 @@
-import {AppError} from "../../@firebx-types/enums";
-import {FirebxRootStore} from "../../@firebx-types";
-import {BaseFetchService, FetchServiceProps} from "../../@firebx-types/service";
+import {AppError, BaseFetchService, FetchServiceProps, FirebxRootStore} from "../../@firebx-types";
 import {collection, doc, getDoc, getDocs, query} from "firebase/firestore";
 
-export abstract class AbstractFetchService<Type> implements BaseFetchService {
-  rootStore: FirebxRootStore;
+export abstract class AbstractFetchService<Type, RootStore extends FirebxRootStore>
+  implements BaseFetchService<RootStore> {
+  rootStore: RootStore;
 
   collectionId: string
 
   abstract fetch(): Promise<any>;
 
-  protected constructor({ rootStore, collectionId }: FetchServiceProps) {
+  protected constructor({ rootStore, collectionId }: FetchServiceProps<RootStore>) {
     this.rootStore = rootStore;
     this.collectionId = collectionId;
   }

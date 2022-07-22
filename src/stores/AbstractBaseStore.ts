@@ -1,15 +1,17 @@
-import {AppError} from "../@firebx-types/enums";
-import {BaseFetchService, FetchServiceProps} from "../@firebx-types/service";
-import {FirebxRootStore} from "../@firebx-types";
+import {AppError, BaseFetchService, FetchServiceProps, FirebxRootStore} from "../@firebx-types";
 import {action, autorun, makeObservable, observable, runInAction} from "mobx";
 
 // eslint-disable-next-line no-use-before-define
-export abstract class AbstractBaseStore<Type, FetchService extends BaseFetchService> {
-  rootStore: FirebxRootStore
+export abstract class AbstractBaseStore<
+  Type,
+  RootStore extends FirebxRootStore,
+  FetchService extends BaseFetchService<RootStore>
+  > {
+  rootStore: RootStore
 
   data: Type | null = null
 
-  fetchService: BaseFetchService
+  fetchService: BaseFetchService<RootStore>
 
   initialized = false
 
@@ -20,8 +22,8 @@ export abstract class AbstractBaseStore<Type, FetchService extends BaseFetchServ
   errorCount: number = 0
 
   protected constructor(
-    FetchConstructor: { new (args: FetchServiceProps): BaseFetchService },
-    { rootStore, collectionId }: FetchServiceProps) {
+    FetchConstructor: { new (args: FetchServiceProps<RootStore>): BaseFetchService<RootStore> },
+    { rootStore, collectionId }: FetchServiceProps<RootStore>) {
     this.rootStore = rootStore
     this.fetchService = new FetchConstructor({ rootStore, collectionId })
     makeObservable(this, {

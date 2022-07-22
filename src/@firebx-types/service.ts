@@ -1,20 +1,20 @@
 import {FirebxRootStore} from "./firebx-root-store";
 
-export interface FetchServiceProps {
-  rootStore: FirebxRootStore;
+export interface FetchServiceProps<RootStore extends FirebxRootStore> {
+  rootStore: RootStore;
   collectionId: string
 }
 
-export interface BaseFetchService extends FetchServiceProps {
+export interface BaseFetchService<RootStore extends FirebxRootStore> extends FetchServiceProps<RootStore> {
   fetch: () => Promise<any>;
 }
 
-export interface FetchCollectionService<Type> extends BaseFetchService {
+export interface FetchCollectionService<Type, RootStore extends FirebxRootStore> extends BaseFetchService<RootStore> {
   fetchAll: () => Promise<Type[] | undefined>;
   fetchByUid: (uid: string) => Promise<Type | undefined>;
 }
 
-export interface FetchSingleService<Type> extends BaseFetchService {
+export interface FetchSingleService<Type, RootStore extends FirebxRootStore> extends BaseFetchService<RootStore> {
   fetchAll: () => Promise<Type[] | undefined>;
   fetchByUid: (uid: string) => Promise<Type | undefined>;
 }
