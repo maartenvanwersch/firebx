@@ -7,7 +7,7 @@ export class FirebaseStore {
 
   readonly firestore: Firestore;
 
-  constructor(rootStore: FirebxRootStore, firebaseApp: FirebaseApp) {
+  constructor({ rootStore, firebaseApp }: { rootStore: FirebxRootStore, firebaseApp: FirebaseApp }) {
     this.rootStore = rootStore;
     this.firestore = getFirestore(firebaseApp);
   }
