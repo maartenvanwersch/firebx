@@ -6,6 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maartenvanwersch/firebx.git"
+  },
   "author": "Maarten van Wersch",
   "license": "MIT",
   "devDependencies": {
