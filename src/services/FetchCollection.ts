@@ -1,6 +1,6 @@
 import {FetchServiceProps} from "../@firebx-types/service";
 import {WithUid} from "../@firebx-types";
-import {AbstractCollectionService} from "./abstractions/AbstractCollectionService";
+import {AbstractCollectionService} from "./abstractions";
 
 export class FetchCollection<Type extends WithUid> extends AbstractCollectionService<Type> {
 

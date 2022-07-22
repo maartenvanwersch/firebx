@@ -1,2 +1,3 @@
-export {CollectionStore, FirebaseStore} from './stores';
-export type {FirebxRootStore} from './@firebx-types';
+export * from './stores';
+export * from './@firebx-types';
+export * from './services'
