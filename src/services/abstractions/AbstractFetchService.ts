@@ -7,25 +7,35 @@ export abstract class AbstractFetchService<Type, RootStore extends FirebxRootSto
 
   collectionId: string
 
+  dependencyFetches: (() => Promise<void>)[] = [];
+
   abstract fetch(): Promise<any>;
 
-  protected constructor({ rootStore, collectionId }: FetchServiceProps<RootStore>) {
+  protected constructor({ rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
     this.rootStore = rootStore;
     this.collectionId = collectionId;
+    this.dependencyFetches = dependencyFetches;
+  }
+
+  async fetchDependencies(): Promise<void> {
+    await Promise.all(this.dependencyFetches.map(fetch => fetch()));
   }
 
   async fetchAll() {
+    await this.fetchDependencies();
     return this.fetchCollection<Type>(this.collectionId);
   }
 
   async fetchByUid(uid: string) {
     if (!uid) throw new Error(AppError.UserUndefined);
+    await this.fetchDependencies();
     return this.fetchDoc<Type>(this.collectionId, uid);
   }
 
   async fetchDoc<Doc>(path: string, ...pathSegments: string[]): Promise<Doc | undefined> {
     if (!path) throw new Error("Path must be defined");
     if (!((pathSegments.length + 1) % 2 === 0)) throw new Error("Doc path must be even");
+    await this.fetchDependencies();
     const ref = doc(
       this.rootStore.firebaseStore.firestore,
       path,
@@ -43,6 +53,7 @@ export abstract class AbstractFetchService<Type, RootStore extends FirebxRootSto
   async fetchCollection<Doc>(path: string, ...pathSegments: string[]): Promise<Doc[] | undefined> {
     if (!path) throw new Error("Path must be defined");
     if ((pathSegments.length + 1) % 2 === 0) throw new Error("Doc path must be uneven");
+    await this.fetchDependencies();
     const results: Doc[] = [];
     const q = query(
       collection(this.rootStore.firebaseStore.firestore, path, ...pathSegments)

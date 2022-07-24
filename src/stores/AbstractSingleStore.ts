@@ -8,9 +8,9 @@ export abstract class AbstractSingleStore<
 
   protected constructor(
     FetchConstructor: { new (args: FetchServiceProps<RootStore>): FetchSingleService<Type, RootStore> },
-    { rootStore, collectionId }: FetchServiceProps<RootStore>
+    { rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>
   ) {
-    super(FetchConstructor, { rootStore, collectionId });
+    super(FetchConstructor, { rootStore, collectionId, dependencyFetches });
   }
 
 }

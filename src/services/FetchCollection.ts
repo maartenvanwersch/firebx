@@ -4,17 +4,11 @@ import {AbstractCollectionService} from "./abstractions";
 export class FetchCollection<Type extends WithUid, RootStore extends FirebxRootStore>
   extends AbstractCollectionService<Type, RootStore> {
 
-  constructor({ rootStore, collectionId }: FetchServiceProps<RootStore>) {
-    super({ rootStore, collectionId });
+  constructor({ rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
+    super({ rootStore, collectionId, dependencyFetches });
   }
 
   async fetch() {
-    // await Promise.all([
-    //   this.rootStore.userStore.fetchAndStoreData(),
-    //   ...this.dependencyFetches
-    // ]);
-    // if (!this.rootStore.userStore.data?.uid)
-    //   throw new Error(AppError.UserUndefined);
     return this.fetchAll()
   }
 

@@ -5,8 +5,8 @@ import {AbstractBaseStore} from "./AbstractBaseStore";
 export abstract class AbstractCollectionStore<Type extends WithUid, RootStore extends FirebxRootStore>
   extends AbstractBaseStore<Type[], RootStore, FetchCollectionService<Type, RootStore>> {
 
-  protected constructor({ rootStore, collectionId }: FetchServiceProps<RootStore>) {
-    super(FetchCollection,{rootStore, collectionId });
+  protected constructor({ rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
+    super(FetchCollection,{rootStore, collectionId, dependencyFetches });
   }
 
   getItemByUid(uid: string): Type | undefined {

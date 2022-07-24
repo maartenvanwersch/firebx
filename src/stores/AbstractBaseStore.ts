@@ -23,9 +23,9 @@ export abstract class AbstractBaseStore<
 
   protected constructor(
     FetchConstructor: { new (args: FetchServiceProps<RootStore>): BaseFetchService<RootStore> },
-    { rootStore, collectionId }: FetchServiceProps<RootStore>) {
+    { rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
     this.rootStore = rootStore
-    this.fetchService = new FetchConstructor({ rootStore, collectionId })
+    this.fetchService = new FetchConstructor({ rootStore, collectionId, dependencyFetches })
     makeObservable(this, {
       data: observable,
       initialized: observable,

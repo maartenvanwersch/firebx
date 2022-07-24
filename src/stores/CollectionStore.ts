@@ -5,7 +5,7 @@ export class CollectionStore<
   Type extends WithUid,
   RootStore extends FirebxRootStore
   > extends AbstractCollectionStore<Type, RootStore> {
-  constructor({ rootStore, collectionId }: FetchServiceProps<RootStore>) {
-    super({ rootStore, collectionId });
+  constructor({ rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
+    super({ rootStore, collectionId, dependencyFetches });
   }
 }

@@ -3,6 +3,7 @@ import {FirebxRootStore} from "./firebx-root-store";
 export interface FetchServiceProps<RootStore extends FirebxRootStore> {
   rootStore: RootStore;
   collectionId: string
+  dependencyFetches: (() => Promise<void>)[]
 }
 
 export interface BaseFetchService<RootStore extends FirebxRootStore> extends FetchServiceProps<RootStore> {
