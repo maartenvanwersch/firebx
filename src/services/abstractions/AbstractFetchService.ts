@@ -18,7 +18,7 @@ export abstract class AbstractFetchService<Type, RootStore extends FirebxRootSto
   }
 
   async fetchDependencies(): Promise<void> {
-    await Promise.all(this.dependencyFetches.map(fetch => fetch()));
+    await Promise.all(this.dependencyFetches?.map(fetch => fetch()));
   }
 
   async fetchAll() {
