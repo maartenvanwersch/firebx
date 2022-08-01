@@ -1,5 +1,28 @@
 import {AppError, BaseFetchService, FetchServiceProps, FirebxRootStore} from "../@firebx-types";
-import {action, autorun, makeObservable, observable, runInAction} from "mobx";
+import {autorun} from "mobx";
+import {BehaviorSubject} from "rxjs";
+
+interface StoreData<Type> {
+  data: Type | null;
+  collectionRef: string;
+  initialized: boolean
+  isFetching: boolean
+  error: Error | null
+  errorCount: number
+  children?: StoreData<Type>[]
+}
+
+function getDefaultStoreData<Type>(): StoreData<Type> {
+  return {
+    data: null,
+    collectionRef: "",
+    initialized: false,
+    isFetching: false,
+    error: null,
+    errorCount: 0,
+    children: []
+  }
+}
 
 // eslint-disable-next-line no-use-before-define
 export abstract class AbstractBaseStore<
@@ -9,49 +32,63 @@ export abstract class AbstractBaseStore<
   > {
   rootStore: RootStore
 
-  data: Type | null = null
+  data$: BehaviorSubject<StoreData<Type>> = new BehaviorSubject(getDefaultStoreData<Type>())
 
   fetchService: BaseFetchService<RootStore>
-
-  initialized = false
-
-  isFetching = false
-
-  error: Error | null = null
-
-  errorCount: number = 0
 
   protected constructor(
     FetchConstructor: { new (args: FetchServiceProps<RootStore>): BaseFetchService<RootStore> },
     { rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
     this.rootStore = rootStore
     this.fetchService = new FetchConstructor({ rootStore, collectionId, dependencyFetches })
-    makeObservable(this, {
-      data: observable,
-      initialized: observable,
-      isFetching: observable,
-      setIsFetching: action,
-      setData: action,
-      setInitialized: action,
-    })
   }
 
-  async fetchAndStoreData(fetch = !this.initialized && !this.isFetching) {
-    if (this.isFetching)
+  // get isFetching(): boolean {
+  //   let result = false;
+  //
+  //   this.data$.subscribe(data => {
+  //     result = !!data?.isFetching;
+  //   });
+  //   return result
+  // }
+  //
+  // get initialized(): boolean {
+  //   let result = false;
+  //
+  //   this.data$.subscribe(data => {
+  //     result = !!data?.initialized;
+  //   });
+  //   return result
+  // }
+  //
+  // get errorCount(): number {
+  //   let result = 0;
+  //
+  //   this.data$.subscribe(data => {
+  //     if (!data?.errorCount) {
+  //       return result
+  //     }
+  //     else {
+  //       result = data.errorCount
+  //     }
+  //   });
+  //   return result
+  // }
+
+  async fetchAndStoreData(fetch = !this.data$.value.initialized && !this.data$.value.isFetching) {
+    if (this.data$.value.isFetching)
       await this.initializeWhenResolved()
     else if (fetch) {
       try {
         this.setIsFetching();
         const data = await this.fetchService.fetch();
-        runInAction(() => {
-          if (!data) this.incrementErrorCountAndRefetch();
-          this.setData(data);
-          this.resetErrorCount();
-          this.setInitialized();
-        })
+        if (!data) return this.incrementErrorCountAndRefetch();
+        this.setData(data);
+        this.resetErrorCount();
+        this.setInitialized();
       } catch (err) {
         this.handleError(err)
-        if (this.errorCount < 4) {
+        if (this.data$.value.errorCount < 4) {
           await this.incrementErrorCountAndRefetch();
         } else {
           this.setInitialized();
@@ -63,7 +100,7 @@ export abstract class AbstractBaseStore<
   async initializeWhenResolved() {
     return new Promise<void>((resolve, reject) => {
       autorun(() => {
-        if (this.initialized) resolve();
+        if (this.data$.value.initialized) resolve();
       });
       setTimeout(() => {
         reject();
@@ -71,60 +108,84 @@ export abstract class AbstractBaseStore<
     });
   }
 
+  setErrorCount(errorCount: number) {
+    this.data$.next({
+      ...this.data$.value,
+      errorCount
+    })
+  }
+
   async incrementErrorCountAndRefetch() {
-    this.errorCount += 1;
+    this.setErrorCount(this.data$.value.errorCount + 1);
     await this.fetchAndStoreData();
   }
 
   handleError(error: unknown) {
-    runInAction(() => {
-      if (error instanceof Error) {
-        console.error(error.message);
-        this.setError(error);
-      }
-      else {
-        console.error(AppError.UnexpectedError, error);
-        this.setError(new Error(AppError.UnexpectedError));
-      }
-      this.resetIsFetching();
-    })
+    if (error instanceof Error) {
+      console.error(error.message);
+      this.setError(error);
+    }
+    else {
+      console.error(AppError.UnexpectedError, error);
+      this.setError(new Error(AppError.UnexpectedError));
+    }
+    this.resetIsFetching();
   }
 
   setIsFetching() {
-    this.isFetching = true;
+    this.data$.next({
+      ...this.data$.value,
+      isFetching: true
+    })
     this.resetError()
   }
 
   resetIsFetching() {
-    this.isFetching = false;
+    this.data$.next({
+      ...this.data$.value,
+      isFetching: false
+    })
   }
 
   setError(error: Error) {
-    this.error = error;
+    this.data$.next({
+      ...this.data$.value,
+      error
+    })
   }
 
   resetError() {
-    this.error = null;
+    this.data$.next({
+      ...this.data$.value,
+      error: null
+    })
   }
 
   resetErrorCount() {
-    this.errorCount = 0;
+    this.data$.next({
+      ...this.data$.value,
+      errorCount: 0
+    })
   }
 
   setData(data: any, callback?: () => void) {
-    this.data = data;
+    this.data$.next({
+      ...this.data$.value,
+      data
+    })
     if (callback) callback();
   }
 
   setInitialized() {
-    this.isFetching = false
-    this.initialized = true;
+    this.data$.next({
+      ...this.data$.value,
+      isFetching: false,
+      initialized: true
+    })
   }
 
   resetStore() {
-    this.initialized = false;
-    this.isFetching = false;
-    this.data = null;
+    this.data$.next(getDefaultStoreData<Type>())
   }
 
 }

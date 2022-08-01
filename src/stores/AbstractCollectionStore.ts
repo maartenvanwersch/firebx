@@ -11,11 +11,11 @@ export abstract class AbstractCollectionStore<Type extends WithUid, RootStore ex
 
   getItemByUid(uid: string): Type | undefined {
     if (!uid) return undefined;
-    if (this.data === null) return undefined;
-    if (!Array.isArray(this.data)) {
+    if (this.data$.value.data === null) return undefined;
+    if (!Array.isArray(this.data$.value.data)) {
       throw new Error("data is not an array");
     }
-    return this.data?.find(item => item.uid === uid)
+    return this.data$.value.data?.find(item => item.uid === uid)
   }
 
 }
