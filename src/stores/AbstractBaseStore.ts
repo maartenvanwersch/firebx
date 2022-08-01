@@ -1,6 +1,6 @@
 import {AppError, BaseFetchService, FetchServiceProps, FirebxRootStore} from "../@firebx-types";
 import {autorun} from "mobx";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, map} from "rxjs";
 
 interface StoreData<Type> {
   data: Type | null;
@@ -32,6 +32,8 @@ export abstract class AbstractBaseStore<
   > {
   rootStore: RootStore
 
+  protected updatedKeys:string[] = [];
+
   data$: BehaviorSubject<StoreData<Type>> = new BehaviorSubject(getDefaultStoreData<Type>())
 
   fetchService: BaseFetchService<RootStore>
@@ -41,39 +43,28 @@ export abstract class AbstractBaseStore<
     { rootStore, collectionId, dependencyFetches }: FetchServiceProps<RootStore>) {
     this.rootStore = rootStore
     this.fetchService = new FetchConstructor({ rootStore, collectionId, dependencyFetches })
+    this.observeData();
   }
 
-  // get isFetching(): boolean {
-  //   let result = false;
-  //
-  //   this.data$.subscribe(data => {
-  //     result = !!data?.isFetching;
-  //   });
-  //   return result
-  // }
-  //
-  // get initialized(): boolean {
-  //   let result = false;
-  //
-  //   this.data$.subscribe(data => {
-  //     result = !!data?.initialized;
-  //   });
-  //   return result
-  // }
-  //
-  // get errorCount(): number {
-  //   let result = 0;
-  //
-  //   this.data$.subscribe(data => {
-  //     if (!data?.errorCount) {
-  //       return result
-  //     }
-  //     else {
-  //       result = data.errorCount
-  //     }
-  //   });
-  //   return result
-  // }
+  observeData() {
+    for (const [key] of Object.entries(this.data$.value)) {
+      Object.defineProperty(this, `${key}$`, {
+        get: () => { return this.data$.pipe(
+          map(data => data[key as keyof StoreData<Type>])
+        ); },
+        set: (value: any) => {
+          if (this.data$.value[key as keyof StoreData<Type>] !== value) {
+            this.data$.next({
+              ...this.data$.value,
+              [key]: value
+            })
+            this.updatedKeys.push(key);
+          }
+        },
+      });
+    }
+    console.log('keys', Object.keys(this))
+  }
 
   async fetchAndStoreData(fetch = !this.data$.value.initialized && !this.data$.value.isFetching) {
     if (this.data$.value.isFetching)
